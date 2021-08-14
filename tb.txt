@@ -1,0 +1,38 @@
+//-----------------------------------------TB FOR TRAFFIC LIGHT CONTROLLER---------------------------------------
+module traffic_controller_tb;
+        //-------------- Inputs---------------------------------------------------------------------
+	reg clock;
+	reg reset;
+	reg x;
+        //---------------Outputs--------------------------------------------------------------------
+	wire [1:0] highway_light;
+	wire [1:0] country_light;
+        //-------------- Instantiate the Unit Under Test (UUT)---------------------------------------
+	traffic_controller uut (
+		.clock(clock), 
+		.reset(reset), 
+		.x(x), 
+		.highway_light(highway_light), 
+		.country_light(country_light)
+	);
+        //---------------------------------CLOCK GENERATION--------------------------------------------
+	parameter CYCLE = 20;
+	initial begin clock = 1; end
+	always #(CYCLE/2) clock = ~clock;
+	//--------------------------------RESET TASK DECLARATION---------------------------------------
+	task rst_dut();
+	begin
+	 @(negedge clock);
+	   reset = 1;
+	 @(negedge clock);
+	   reset = 0;
+	 end
+	 endtask
+	 //-----------------------------INPUT GENERATION-------------------------------------------------
+	 initial 
+	 begin
+	   rst_dut();
+		#25 x = 0;
+		#100 x = 1;
+	 end
+endmodule

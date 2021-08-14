@@ -1,0 +1,64 @@
+//-------------------------------------------------RTL FOR TRAFFIC LIGHT CONTROLLER--------------------------------------------
+module traffic_controller(
+    input clock,
+    input reset,
+    input x,
+    output reg [1:0] highway_light,
+    output reg [1:0] country_light
+    );
+    //---------------------------------------------PARAMETER DECLARATION-------------------------------------------------------
+    parameter green = 2'b01, 
+	      yellow= 2'b10,
+	      red   = 2'b11;
+	 parameter S0    = 3'd1, //state parameter declared
+	           S1    = 3'd2,
+		   S2    = 3'd3,
+		   S3    = 3'd4,
+		   S4    = 3'd5;
+	 parameter Y_R   = 3,   //delays are declared
+	           R_G   = 2;
+    //---------------------------------------------INTERNAL REG DECLARATION-----------------------------------------------------
+	reg [2:0] present;
+	reg [2:0] next;
+    //---------------------------------------------PRESENT BLOCK----------------------------------------------------------------
+	always@(posedge clock)
+	begin
+	if(reset)
+	begin
+	  present <= S0;
+	end
+	else
+	  present <= next;
+       end
+    //----------------------------------------------NEXT BLOCK---------------------------------------------------------------
+	always@(posedge clock)
+	begin
+	case(present)
+	  S0 : begin
+	         highway_light = green ; country_light = red;
+				if(x) next <= S1;
+			   else  next <= S0;
+			 end
+	  S1 : begin
+	         highway_light = yellow; country_light = red;
+				#(Y_R) next <= S2;
+			 end
+	  S2 : begin
+	         highway_light = red   ; country_light = red;
+				#(R_G) next <= S3;
+			 end
+	  S3 : begin
+	         highway_light = red   ; country_light = green;
+				next <= S4;
+			 end
+	  S4 : begin
+	         highway_light = red   ; country_light = yellow;
+				if(x) next <= S4;
+		      else #(Y_R) next <= S0;
+			 end
+	  default : begin
+	              highway_light = green ; country_light = red;
+			      end
+	 endcase
+	 end
+endmodule
