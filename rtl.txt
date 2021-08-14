@@ -1,4 +1,4 @@
-//-------------------------------------------------RTL FOR TRAFFIC LIGHT CONTROLLER--------------------------------------------
+//-------------------------------------------------RTL FOR TRAFFIC LIGHT CONTROLLER---------------------------------------------
 module traffic_controller(
     input clock,
     input reset,
